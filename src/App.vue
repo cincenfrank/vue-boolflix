@@ -9,7 +9,7 @@
       :countryCode="movie.original_language"
       :originalTitle="movie.original_title"
       :rank="movie.vote_average"
-      :backdropPath="movie.backdrop_path"
+      :backdropPath="movie.poster_path"
     ></MediaCard>
     <h2>TV Series</h2>
     <MediaCard
@@ -19,7 +19,7 @@
       :countryCode="serie.original_language"
       :originalTitle="serie.original_name"
       :rank="serie.vote_average"
-      :backdropPath="serie.backdrop_path"
+      :backdropPath="serie.poster_path"
     ></MediaCard>
   </div>
 </template>
