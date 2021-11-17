@@ -2,38 +2,33 @@
   <div id="app">
     <SearchBar @onSearch="onSearch"></SearchBar>
     <h2>Movies</h2>
-    <ul>
-      <li v-for="movie in moviesList" :key="movie.id">
-        {{ movie.title }}
-        <ul>
-          <li>{{ movie.original_title }}</li>
-          <li>{{ movie.original_language }}</li>
-          <li>{{ movie.popularity }}</li>
-          <!-- <li>{{ movie.original_title }}</li> -->
-        </ul>
-      </li>
-    </ul>
+    <MediaCard
+      v-for="movie in moviesList"
+      :key="movie.id"
+      :title="movie.title"
+      :countryCode="movie.original_language"
+      :originalTitle="movie.original_title"
+      :rank="movie.vote_average"
+    ></MediaCard>
     <h2>TV Series</h2>
-    <ul>
-      <li v-for="movie in seriesList" :key="movie.id">
-        {{ movie.name }}
-        <ul>
-          <li>{{ movie.original_name }}</li>
-          <li>{{ movie.original_language }}</li>
-          <li>{{ movie.popularity }}</li>
-          <!-- <li>{{ movie.original_title }}</li> -->
-        </ul>
-      </li>
-    </ul>
+    <MediaCard
+      v-for="serie in seriesList"
+      :key="serie.id"
+      :title="serie.name"
+      :countryCode="serie.original_language"
+      :originalTitle="serie.original_name"
+      :rank="serie.vote_average"
+    ></MediaCard>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import SearchBar from "./components/SearchBar.vue";
+import MediaCard from "./components/MediaCard.vue";
 export default {
   name: "App",
-  components: { SearchBar },
+  components: { SearchBar, MediaCard },
   data() {
     return {
       apiKey: "4315a46b8f5cb187030ac497d365dea0",
@@ -62,11 +57,12 @@ export default {
         .get(this.apiEndpoint + this.apiConfig[apiType].url, {
           params: { api_key: this.apiKey, query: queryText },
         })
-        .then(
-          (resp) =>
-            (this[this.apiConfig[apiType].variableListName] = resp.data.results)
-        );
+        .then((resp) => {
+          console.log(resp.data);
+          this[this.apiConfig[apiType].variableListName] = resp.data.results;
+        });
     },
+
     // searchSeries(searchedText) {
     //   axios
     //     .get(this.apiEndpoint + "/search/tv", {
