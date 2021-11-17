@@ -5,22 +5,29 @@
       <ul>
         <li>{{ originalTitle }}</li>
         <li>
-          {{ getFlag(countryCode) }}
+          {{ countryFlag }}
         </li>
-        <li>{{ rank }}</li>
+        <!-- <li>{{ rankStarNumber }}</li> -->
+        <li>
+          <StarsRank :rank="rankStarNumber"></StarsRank>
+        </li>
+        <li><img :src="backdropUrl" :alt="title + ' poster'" /></li>
       </ul>
     </li>
   </ul>
 </template>
 
 <script>
+import StarsRank from "./StarsRank.vue";
 export default {
+  components: { StarsRank },
   name: "MediaCard",
   props: {
     title: String,
     originalTitle: String,
     countryCode: String,
     rank: Number,
+    backdropPath: String,
   },
   data() {
     return {
@@ -32,14 +39,24 @@ export default {
         fr: "🇫🇷",
         default: "🗺",
       },
+      backdropBaseUrl: "https://image.tmdb.org/t/p/",
+      defaultImageSize: "w342",
     };
   },
-  methods: {
-    getFlag(inputString) {
-      if (Object.keys(this.flagObject).includes(inputString)) {
-        return this.flagObject[inputString];
+  methods: {},
+  computed: {
+    backdropUrl() {
+      return this.backdropBaseUrl + this.defaultImageSize + this.backdropPath;
+    },
+
+    countryFlag() {
+      if (Object.keys(this.flagObject).includes(this.countryCode)) {
+        return this.flagObject[this.countryCode];
       }
       return this.flagObject.default;
+    },
+    rankStarNumber() {
+      return Math.round(this.rank / 2);
     },
   },
 };
