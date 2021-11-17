@@ -1,0 +1,37 @@
+.media-card {
+  //   margin: 10px;
+  position: relative;
+  display: inline-block;
+  //   overflow: auto;
+  //   height: 500px;
+  flex-basis: calc(
+    (100% / $poster-elements) -
+      (($poster-gap * ($poster-elements - 1)) / $poster-elements)
+  );
+  img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+  }
+  &:hover {
+    .card-overlay {
+      opacity: 1;
+    }
+  }
+  .card-overlay {
+    padding: 10px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(2, 2, 2, 0.8);
+    color: white;
+    opacity: 0;
+    transition: opacity 0.4s;
+    overflow: auto;
+  }
+}

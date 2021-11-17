@@ -1,26 +1,39 @@
 <template>
   <div id="app">
-    <SearchBar @onSearch="onSearch"></SearchBar>
-    <h2>Movies</h2>
-    <MediaCard
-      v-for="movie in moviesList"
-      :key="movie.id"
-      :title="movie.title"
-      :countryCode="movie.original_language"
-      :originalTitle="movie.original_title"
-      :rank="movie.vote_average"
-      :backdropPath="movie.poster_path"
-    ></MediaCard>
-    <h2>TV Series</h2>
-    <MediaCard
-      v-for="serie in seriesList"
-      :key="serie.id"
-      :title="serie.name"
-      :countryCode="serie.original_language"
-      :originalTitle="serie.original_name"
-      :rank="serie.vote_average"
-      :backdropPath="serie.poster_path"
-    ></MediaCard>
+    <header>
+      <nav>
+        <span>BOOLFLIX</span>
+        <SearchBar @onSearch="onSearch"></SearchBar>
+      </nav>
+    </header>
+    <main>
+      <h2 v-if="moviesList.length > 0">Movies</h2>
+      <div class="shell">
+        <MediaCard
+          v-for="movie in moviesList"
+          :key="movie.id"
+          :title="movie.title"
+          :countryCode="movie.original_language"
+          :originalTitle="movie.original_title"
+          :rank="movie.vote_average"
+          :posterPath="movie.poster_path"
+          :overview="movie.overview"
+        ></MediaCard>
+      </div>
+      <h2 v-if="seriesList.length > 0">TV Series</h2>
+      <div class="shell">
+        <MediaCard
+          v-for="serie in seriesList"
+          :key="serie.id"
+          :title="serie.name"
+          :countryCode="serie.original_language"
+          :originalTitle="serie.original_name"
+          :rank="serie.vote_average"
+          :posterPath="serie.poster_path"
+          :overview="serie.overview"
+        ></MediaCard>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -78,12 +91,13 @@ export default {
 </script>
 
 <style lang="scss">
+@import "@/styles/app.scss";
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  // margin-top: 60px;
 }
 </style>

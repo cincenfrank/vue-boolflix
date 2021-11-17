@@ -1,7 +1,7 @@
 <template>
   <div>
     <input type="text" v-model="inputText" @keydown.enter="startSearch" />
-    <button @click="startSearch">Search</button>
+    <button @click="startSearch">🔎</button>
   </div>
 </template>
 

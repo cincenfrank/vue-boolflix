@@ -1,20 +1,29 @@
 <template>
-  <ul>
-    <li>
-      {{ title }}
-      <ul>
-        <li>{{ originalTitle }}</li>
-        <li>
-          {{ countryFlag }}
-        </li>
-        <!-- <li>{{ rankStarNumber }}</li> -->
-        <li>
-          <StarsRank :rank="rankStarNumber"></StarsRank>
-        </li>
-        <li><img :src="backdropUrl" :alt="title + ' poster'" /></li>
-      </ul>
-    </li>
-  </ul>
+  <div class="media-card">
+    <img :src="posterUrl" :alt="title + ' poster'" />
+    <div class="card-overlay">
+      <p>
+        <strong>Title </strong>
+        <span>{{ title }}</span>
+      </p>
+      <p>
+        <strong>Original Country </strong>
+        <span> {{ countryFlag }}</span>
+      </p>
+      <p>
+        <strong>Original Title </strong>
+        <span> {{ originalTitle }}</span>
+      </p>
+      <p>
+        <strong>Voto </strong>
+        <StarsRank :rank="rankStarNumber"></StarsRank>
+      </p>
+      <p>
+        <strong>Overview </strong>
+        <span> {{ overview }}</span>
+      </p>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -27,7 +36,8 @@ export default {
     originalTitle: String,
     countryCode: String,
     rank: Number,
-    backdropPath: String,
+    posterPath: String,
+    overview: String,
   },
   data() {
     return {
@@ -39,14 +49,14 @@ export default {
         fr: "🇫🇷",
         default: "🗺",
       },
-      backdropBaseUrl: "https://image.tmdb.org/t/p/",
+      posterBaseUrl: "https://image.tmdb.org/t/p/",
       defaultImageSize: "w342",
     };
   },
   methods: {},
   computed: {
-    backdropUrl() {
-      return this.backdropBaseUrl + this.defaultImageSize + this.backdropPath;
+    posterUrl() {
+      return this.posterBaseUrl + this.defaultImageSize + this.posterPath;
     },
 
     countryFlag() {
