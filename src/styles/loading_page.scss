@@ -1,0 +1,33 @@
+.loading-page {
+  img {
+    animation: pulseAnimation $loading-animation-duration infinite;
+  }
+  h4 {
+    padding-top: $padding-10 * 2;
+    animation: fadeInOut $loading-animation-duration infinite;
+  }
+}
+
+@keyframes pulseAnimation {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

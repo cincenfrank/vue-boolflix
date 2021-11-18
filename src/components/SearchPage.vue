@@ -54,6 +54,7 @@ export default {
       },
       moviesList: [],
       seriesList: [],
+      pendingCalls: 0,
     };
   },
 
@@ -66,6 +67,7 @@ export default {
       }
     },
     search(apiType, queryText) {
+      this.pendingCalls++;
       axios
         .get(this.apiEndpoint + this.apiConfig[apiType].url, {
           params: { api_key: this.apiKey, query: queryText },
@@ -73,12 +75,18 @@ export default {
         .then((resp) => {
           console.log(resp.data);
           this[this.apiConfig[apiType].variableListName] = resp.data.results;
+          this.pendingCalls--;
         });
     },
   },
   watch: {
     queryString: function () {
       this.onSearch();
+    },
+    pendingCalls: function () {
+      if (this.pendingCalls === 0) {
+        this.$emit("loadingComplete");
+      }
     },
   },
   mounted() {

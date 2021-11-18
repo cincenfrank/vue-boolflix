@@ -1,16 +1,20 @@
 @import "variables.scss";
 @import "search_bar.scss";
 @import "media_card.scss";
+@import "loading_page.scss";
 
 header {
   nav {
     display: flex;
     justify-content: space-between;
     background-color: black;
-    padding: $padding-10 * 3 $padding-10;
+    padding: $padding-10 $padding-10;
     color: red;
     font-weight: bold;
     font-size: 25px;
+    img {
+      max-width: 200px;
+    }
   }
 }
 * {

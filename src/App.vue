@@ -1,80 +1,69 @@
 <template>
-  <div id="app" class="vh-100 overflow-hidden">
+  <div id="app" class="vh-100 overflow-hidden d-flex flex-column">
     <header>
       <nav>
-        <span>BOOLFLIX</span>
+        <img src="@/assets/logo_boolflix.png" alt="logo boolflix" />
         <SearchBar @onSearch="onSearch"></SearchBar>
       </nav>
     </header>
-    <main class="overflow-auto h-100 bg-dark">
-      <div class="container">
-        <SearchPage v-if="searchPage" :queryString="queryString"></SearchPage>
-        <!-- <h2 v-if="moviesList.length > 0">Movies</h2>
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5">
-        <div class="col p-0" v-for="movie in moviesList" :key="movie.id">
-          <MediaCard
-            :title="movie.title"
-            :countryCode="movie.original_language"
-            :originalTitle="movie.original_title"
-            :rank="movie.vote_average"
-            :posterPath="movie.poster_path"
-            :overview="movie.overview"
-          ></MediaCard>
-        </div>
-      </div>
-      <h2 v-if="seriesList.length > 0">TV Series</h2>
-      <div class="shell">
-        <MediaCard
-          v-for="serie in seriesList"
-          :key="serie.id"
-          :title="serie.name"
-          :countryCode="serie.original_language"
-          :originalTitle="serie.original_name"
-          :rank="serie.vote_average"
-          :posterPath="serie.poster_path"
-          :overview="serie.overview"
-        ></MediaCard>
-      </div> -->
+    <main
+      class="overflow-hidden bg-dark flex-grow-1 py-5 position-relative h-100"
+    >
+      <div class="h-100 overflow-auto">
+        <SearchPage
+          class="container"
+          v-if="routingObject.searchPage"
+          @loadingComplete="onLoadingComplete('searchPage')"
+          :queryString="queryString"
+        ></SearchPage>
+        <LoadingPage
+          class="
+            container
+            position-absolute
+            top-0
+            bottom-0
+            bg-dark
+            start-0
+            end-0
+          "
+          v-if="routingObject.loadingPage"
+        ></LoadingPage>
       </div>
     </main>
   </div>
 </template>
 
 <script>
+import LoadingPage from "./components/LoadingPage.vue";
 import SearchBar from "./components/SearchBar.vue";
 import SearchPage from "./components/SearchPage.vue";
 // import MediaCard from "./components/MediaCard.vue";
 export default {
   name: "App",
-  components: { SearchBar, SearchPage },
+  components: { SearchBar, SearchPage, LoadingPage },
   data() {
-    return { queryString: "", searchPage: false };
-    //   return {
-    //     apiKey: "4315a46b8f5cb187030ac497d365dea0",
-    //     apiEndpoint: "https://api.themoviedb.org/3",
-    //     apiConfig: {
-    //       movies: {
-    //         url: "/search/movie",
-    //         variableListName: "moviesList",
-    //       },
-    //       series: {
-    //         url: "/search/tv",
-    //         variableListName: "seriesList",
-    //       },
-    //     },
-    //     moviesList: [],
-    //     seriesList: [],
-    //   };
+    return {
+      queryString: "",
+
+      routingObject: {
+        searchPage: false,
+        loadingPage: true,
+      },
+    };
   },
   methods: {
     onSearch(newQueryString) {
       if (newQueryString.trim()) {
         // debugger;
         this.queryString = newQueryString;
-        this.searchPage = true;
+        this.routingObject.searchPage = true;
+        // this.searchPage = true;
       }
       // this.search("movies", queryString);
       // this.search("series", queryString);
+    },
+    onLoadingComplete() {
+      this.routingObject.loadingPage = false;
     },
     // search(apiType, queryText) {
     //   axios
