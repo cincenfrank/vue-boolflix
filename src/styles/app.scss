@@ -1,11 +1,16 @@
 @import "variables.scss";
+@import "search_bar.scss";
 @import "media_card.scss";
+
 header {
   nav {
     display: flex;
     justify-content: space-between;
     background-color: black;
-    padding: 30px 10px;
+    padding: $padding-10 * 3 $padding-10;
+    color: red;
+    font-weight: bold;
+    font-size: 25px;
   }
 }
 * {
@@ -15,11 +20,4 @@ header {
 }
 body {
   background-color: gray;
-}
-main {
-  .shell {
-    display: flex;
-    flex-wrap: wrap;
-    gap: $poster-gap;
-  }
 }

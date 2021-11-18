@@ -1,37 +1,53 @@
 .media-card {
   //   margin: 10px;
+  padding: 0;
   position: relative;
   display: inline-block;
   //   overflow: auto;
   //   height: 500px;
-  flex-basis: calc(
-    (100% / $poster-elements) -
-      (($poster-gap * ($poster-elements - 1)) / $poster-elements)
-  );
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  //   flex-basis: calc(
+  //     (100% / $poster-elements) -
+  //       (($poster-gap * ($poster-elements - 1)) / $poster-elements)
+  //   );
   img {
     height: 100%;
     width: 100%;
     object-fit: cover;
+    transition: filter $card-animation-time;
   }
   &:hover {
+    img {
+      filter: blur(5px);
+    }
     .card-overlay {
       opacity: 1;
+      top: 0;
     }
   }
   .card-overlay {
-    padding: 10px;
+    padding: $padding-10;
     height: 100%;
     position: absolute;
-    top: 0;
+    top: 100%;
     bottom: 0;
     left: 0;
     right: 0;
     display: flex;
     flex-direction: column;
-    background-color: rgba(2, 2, 2, 0.8);
+    background-color: rgba(2, 2, 2, 0.6);
     color: white;
     opacity: 0;
-    transition: opacity 0.4s;
-    overflow: auto;
+    transition: all $card-animation-time;
+    // transition: heigth $card-animation-time;
+    overflow: hidden;
+    .stars-rank {
+      display: inline-block;
+    }
+    .overview {
+      overflow: auto;
+    }
   }
 }

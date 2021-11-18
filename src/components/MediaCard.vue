@@ -3,24 +3,24 @@
     <img :src="posterUrl" :alt="title + ' poster'" />
     <div class="card-overlay">
       <p>
-        <strong>Title </strong>
+        <strong>Title: </strong>
         <span>{{ title }}</span>
       </p>
       <p>
-        <strong>Original Country </strong>
+        <strong>Original Language: </strong>
         <span> {{ countryFlag }}</span>
       </p>
-      <p>
-        <strong>Original Title </strong>
+      <p v-if="originalTitle !== title">
+        <strong>Original Title: </strong>
         <span> {{ originalTitle }}</span>
       </p>
       <p>
-        <strong>Voto </strong>
-        <StarsRank :rank="rankStarNumber"></StarsRank>
+        <strong>Voto: </strong>
+        <StarsRank :rank="rankStarNumber" class="stars-rank"></StarsRank>
       </p>
-      <p>
-        <strong>Overview </strong>
-        <span> {{ overview }}</span>
+      <strong>Overview </strong>
+      <p class="overview">
+        <span> {{ overview ? overview : "overview not available" }}</span>
       </p>
     </div>
   </div>
@@ -47,6 +47,15 @@ export default {
         es: "🇪🇸",
         de: "🇩🇪",
         fr: "🇫🇷",
+        sv: "🇸🇪",
+        cs: "🇨🇿",
+        pl: "🇵🇱",
+        pt: "🇵🇹",
+        hi: "🇮🇳",
+        tl: "🇵🇭",
+        ko: "🇰🇷",
+        zh: "🇨🇳",
+        hr: "🇭🇷",
         default: "🗺",
       },
       posterBaseUrl: "https://image.tmdb.org/t/p/",
@@ -56,13 +65,18 @@ export default {
   methods: {},
   computed: {
     posterUrl() {
-      return this.posterBaseUrl + this.defaultImageSize + this.posterPath;
+      if (this.posterPath) {
+        return this.posterBaseUrl + this.defaultImageSize + this.posterPath;
+      } else {
+        return require("@/assets/no_image.jpeg");
+      }
     },
 
     countryFlag() {
-      if (Object.keys(this.flagObject).includes(this.countryCode)) {
-        return this.flagObject[this.countryCode];
+      if (this.flagObject[this.countryCode.toLowerCase()]) {
+        return this.flagObject[this.countryCode.toLowerCase()];
       }
+      console.log(this.countryCode);
       return this.flagObject.default;
     },
     rankStarNumber() {
