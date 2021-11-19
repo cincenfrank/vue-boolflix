@@ -6,9 +6,7 @@
         <SearchBar @onSearch="onSearch"></SearchBar>
       </nav>
     </header>
-    <main
-      class="overflow-hidden bg-dark flex-grow-1 py-5 position-relative h-100"
-    >
+    <main class="overflow-hidden bg-dark flex-grow-1 position-relative h-100">
       <div class="h-100 overflow-auto">
         <SearchPage
           class="container"
@@ -16,6 +14,18 @@
           @loadingComplete="onLoadingComplete('searchPage')"
           :queryString="queryString"
         ></SearchPage>
+        <HomePage
+          class="
+            container
+            position-absolute
+            top-0
+            bottom-0
+            bg-dark
+            start-0
+            end-0
+          "
+          v-if="routingObject.homePage"
+        ></HomePage>
         <LoadingPage
           class="
             container
@@ -34,13 +44,13 @@
 </template>
 
 <script>
+import HomePage from "./components/HomePage.vue";
 import LoadingPage from "./components/LoadingPage.vue";
 import SearchBar from "./components/SearchBar.vue";
 import SearchPage from "./components/SearchPage.vue";
-// import MediaCard from "./components/MediaCard.vue";
 export default {
   name: "App",
-  components: { SearchBar, SearchPage, LoadingPage },
+  components: { SearchBar, SearchPage, LoadingPage, HomePage },
   data() {
     return {
       queryString: "",
@@ -48,20 +58,29 @@ export default {
       routingObject: {
         searchPage: false,
         loadingPage: true,
+        homePage: false,
       },
     };
   },
   methods: {
+    initData() {
+      this.routingObject.loadingPage = false;
+      this.routingObject.homePage = true;
+    },
     onSearch(newQueryString) {
-      if (newQueryString.trim()) {
-        // debugger;
-        this.queryString = newQueryString;
-        this.routingObject.searchPage = true;
-        // this.searchPage = true;
+      if (this.queryString !== newQueryString) {
+        if (newQueryString.trim()) {
+          this.routingObject.loadingPage = true;
+          this.routingObject.homePage = false;
+
+          this.queryString = newQueryString;
+          this.routingObject.searchPage = true;
+        }
       }
       // this.search("movies", queryString);
       // this.search("series", queryString);
     },
+
     onLoadingComplete() {
       this.routingObject.loadingPage = false;
     },
@@ -84,7 +103,11 @@ export default {
     //     .then((resp) => console.log(resp.data));
     // },
   },
-  mounted() {},
+  mounted() {
+    setTimeout(() => {
+      this.initData();
+    }, 3000);
+  },
 };
 </script>
 

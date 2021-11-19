@@ -1,6 +1,6 @@
 <template>
   <div class="media-card">
-    <img :src="posterUrl" :alt="title + ' poster'" />
+    <img class="poster-img" :src="posterUrl" :alt="title + ' poster'" />
     <div class="card-overlay">
       <p>
         <strong>Title: </strong>
@@ -22,22 +22,42 @@
       <p class="overview">
         <span> {{ overview ? overview : "overview not available" }}</span>
       </p>
+
+      <strong v-if="castList.length > 0">Cast</strong>
+      <!-- <strong>{{ castList.toString() }}</strong> -->
+      <div class="row row-cols-2">
+        <div
+          class="col"
+          v-for="actor in castList"
+          :key="id + '-' + type + '-' + actor.id"
+        >
+          <ActorCard
+            :actorName="actor.name"
+            :imageAlt="actor.name + 'profile'"
+            :imagePath="profileImageUrl(actor.profile_path)"
+          ></ActorCard>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+import ActorCard from "./ActorCard.vue";
 import StarsRank from "./StarsRank.vue";
 export default {
-  components: { StarsRank },
+  components: { StarsRank, ActorCard },
   name: "MediaCard",
   props: {
+    type: String,
+    id: Number,
     title: String,
     originalTitle: String,
     countryCode: String,
     rank: Number,
     posterPath: String,
     overview: String,
+    castList: Array,
   },
   data() {
     return {
@@ -62,7 +82,16 @@ export default {
       defaultImageSize: "w342",
     };
   },
-  methods: {},
+  methods: {
+    profileImageUrl(profilePath) {
+      // debugger;
+      if (profilePath) {
+        return this.posterBaseUrl + "w185" + profilePath;
+      } else {
+        return require("@/assets/person_placeholder.jpeg");
+      }
+    },
+  },
   computed: {
     posterUrl() {
       if (this.posterPath) {
@@ -81,6 +110,11 @@ export default {
     },
     rankStarNumber() {
       return Math.round(this.rank / 2);
+    },
+  },
+  watch: {
+    castList: function () {
+      this.$forceUpdate();
     },
   },
 };

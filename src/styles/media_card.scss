@@ -12,14 +12,14 @@
   //     (100% / $poster-elements) -
   //       (($poster-gap * ($poster-elements - 1)) / $poster-elements)
   //   );
-  img {
+  .poster-img {
     height: 100%;
     width: 100%;
     object-fit: cover;
     transition: filter $card-animation-time;
   }
   &:hover {
-    img {
+    .poster-img {
       filter: blur(5px);
     }
     .card-overlay {
@@ -42,12 +42,12 @@
     opacity: 0;
     transition: all $card-animation-time;
     // transition: heigth $card-animation-time;
-    overflow: hidden;
+    overflow: auto;
     .stars-rank {
       display: inline-block;
     }
     .overview {
-      overflow: auto;
+      // overflow: auto;
     }
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <span v-for="el in rank" :key="el + 'solid'"> ★ </span>
-    <span v-for="el in emptyStars" :key="el + 'light'"> ☆ </span>
+    <span v-for="el in rank" :key="el + '-solid'"> ★ </span>
+    <span v-for="el in emptyStars" :key="el + '-empty'"> ☆ </span>
   </div>
 </template>
 
