@@ -22,7 +22,6 @@
           :rank="movie.vote_average"
           :posterPath="movie.poster_path"
           :overview="movie.overview"
-          :castList="movie.cast ? movie.cast : []"
         ></MediaCard>
       </div>
     </div>
@@ -45,7 +44,6 @@
           :rank="serie.vote_average"
           :posterPath="serie.poster_path"
           :overview="serie.overview"
-          :castList="serie.cast ? serie.cast : []"
         ></MediaCard>
       </div>
     </div>
@@ -69,12 +67,12 @@ export default {
         movies: {
           url: "/search/movie",
           variableListName: "moviesList",
-          creditsSuffix: "/movie/",
+          // creditsSuffix: "/movie/",
         },
         series: {
           url: "/search/tv",
           variableListName: "seriesList",
-          creditsSuffix: "/tv/",
+          // creditsSuffix: "/tv/",
         },
       },
       apiGenreConfig: {
@@ -129,33 +127,33 @@ export default {
           console.log(resp.data);
           this[this.apiConfig[apiType].variableListName] = resp.data.results;
 
-          this[this.apiConfig[apiType].variableListName].forEach((element) => {
-            // element.cast = [];
-            this.getCredits(apiType, element.id, element);
-          });
+          // this[this.apiConfig[apiType].variableListName].forEach((element) => {
+          //   // element.cast = [];
+          //   this.getCredits(apiType, element.id, element);
+          // });
           this.pendingCalls--;
         });
     },
-    getCredits(apiType, id, objectReference) {
-      this.pendingCalls++;
-      axios
-        .get(
-          this.apiEndpoint +
-            this.apiConfig[apiType].creditsSuffix +
-            id +
-            "/credits",
-          {
-            params: { api_key: this.apiKey },
-          }
-        )
-        .then((resp) => {
-          // debugger;
-          // console.log(resp.data.cast);
+    // getCredits(apiType, id, objectReference) {
+    //   this.pendingCalls++;
+    //   axios
+    //     .get(
+    //       this.apiEndpoint +
+    //         this.apiConfig[apiType].creditsSuffix +
+    //         id +
+    //         "/credits",
+    //       {
+    //         params: { api_key: this.apiKey },
+    //       }
+    //     )
+    //     .then((resp) => {
+    //       // debugger;
+    //       // console.log(resp.data.cast);
 
-          objectReference["cast"] = [...resp.data.cast];
-          this.pendingCalls--;
-        });
-    },
+    //       objectReference["cast"] = [...resp.data.cast];
+    //       this.pendingCalls--;
+    //     });
+    // },
   },
   watch: {
     queryString: function () {

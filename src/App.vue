@@ -64,14 +64,22 @@ export default {
   },
   methods: {
     initData() {
+      this.resetRoutingPages();
       this.routingObject.loadingPage = false;
       this.routingObject.homePage = true;
+    },
+    resetRoutingPages() {
+      for (const key in this.routingObject) {
+        if (key !== "loadingPage") {
+          this.routingObject[key] = false;
+        }
+      }
     },
     onSearch(newQueryString) {
       if (this.queryString !== newQueryString) {
         if (newQueryString.trim()) {
           this.routingObject.loadingPage = true;
-          this.routingObject.homePage = false;
+          this.resetRoutingPages();
 
           this.queryString = newQueryString;
           this.routingObject.searchPage = true;

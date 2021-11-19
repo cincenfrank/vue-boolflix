@@ -1,5 +1,5 @@
 <template>
-  <div class="media-card">
+  <div class="media-card" @mouseover="fetchData">
     <img class="poster-img" :src="posterUrl" :alt="title + ' poster'" />
     <div class="card-overlay">
       <p>
@@ -8,7 +8,8 @@
       </p>
       <p>
         <strong>Original Language: </strong>
-        <span> {{ countryFlag }}</span>
+        <!-- <span> {{ countryFlag }}</span> -->
+        <img class="d-inline w-25" :src="countryFlag" alt="dd" />
       </p>
       <p v-if="originalTitle !== title">
         <strong>Original Title: </strong>
@@ -23,9 +24,9 @@
         <span> {{ overview ? overview : "overview not available" }}</span>
       </p>
 
-      <strong v-if="castList.length > 0">Cast</strong>
+      <strong v-if="creditsAlreadyLoaded && castList.length > 0">Cast</strong>
       <!-- <strong>{{ castList.toString() }}</strong> -->
-      <div class="row row-cols-2">
+      <div v-if="creditsAlreadyLoaded" class="row row-cols-2">
         <div
           class="col"
           v-for="actor in castList"
@@ -45,6 +46,7 @@
 <script>
 import ActorCard from "./ActorCard.vue";
 import StarsRank from "./StarsRank.vue";
+import axios from "axios";
 export default {
   components: { StarsRank, ActorCard },
   name: "MediaCard",
@@ -57,32 +59,59 @@ export default {
     rank: Number,
     posterPath: String,
     overview: String,
-    castList: Array,
   },
   data() {
     return {
+      isFetchingData: false,
+      creditsAlreadyLoaded: false,
+      apiKey: "4315a46b8f5cb187030ac497d365dea0",
+      apiEndpoint: "https://api.themoviedb.org/3",
+      // flagObject: {
+      //   it: "🇮🇹",
+      //   en: "🇺🇸",
+      //   es: "🇪🇸",
+      //   de: "🇩🇪",
+      //   fr: "🇫🇷",
+      //   sv: "🇸🇪",
+      //   cs: "🇨🇿",
+      //   pl: "🇵🇱",
+      //   pt: "🇵🇹",
+      //   hi: "🇮🇳",
+      //   tl: "🇵🇭",
+      //   ko: "🇰🇷",
+      //   zh: "🇨🇳",
+      //   hr: "🇭🇷",
+      //   default: "🗺",
+      // },
+      castList: [],
       flagObject: {
-        it: "🇮🇹",
-        en: "🇺🇸",
-        es: "🇪🇸",
-        de: "🇩🇪",
-        fr: "🇫🇷",
-        sv: "🇸🇪",
-        cs: "🇨🇿",
-        pl: "🇵🇱",
-        pt: "🇵🇹",
-        hi: "🇮🇳",
-        tl: "🇵🇭",
-        ko: "🇰🇷",
-        zh: "🇨🇳",
-        hr: "🇭🇷",
-        default: "🗺",
+        it: "it",
+        en: "us",
+        es: "es",
+        de: "de",
+        fr: "fr",
+        sv: "sv",
+        cs: "cz",
+        pl: "pl",
+        pt: "pt",
+        hi: "in",
+        tl: "tl",
+        ko: "kr",
+        zh: "ch",
+        hr: "hr",
+        default: "xx",
       },
       posterBaseUrl: "https://image.tmdb.org/t/p/",
       defaultImageSize: "w342",
     };
   },
   methods: {
+    fetchData() {
+      // debugger;
+      if (!this.isFetchingData && !this.creditsAlreadyLoaded) {
+        this.getCredits();
+      }
+    },
     profileImageUrl(profilePath) {
       // debugger;
       if (profilePath) {
@@ -90,6 +119,26 @@ export default {
       } else {
         return require("@/assets/person_placeholder.jpeg");
       }
+    },
+    getCredits() {
+      // debugger;
+      this.isFetchingData = true;
+      // this.pendingCalls++;
+      const creditsSuffix = "/" + this.type + "/";
+      axios
+        .get(this.apiEndpoint + creditsSuffix + this.id + "/credits", {
+          params: { api_key: this.apiKey },
+        })
+        .then((resp) => {
+          // debugger;
+          // console.log(resp.data.cast);
+
+          this.castList = [...resp.data.cast];
+          this.isFetchingData = false;
+          this.creditsAlreadyLoaded = true;
+
+          // this.pendingCalls--;
+        });
     },
   },
   computed: {
@@ -103,10 +152,12 @@ export default {
 
     countryFlag() {
       if (this.flagObject[this.countryCode.toLowerCase()]) {
-        return this.flagObject[this.countryCode.toLowerCase()];
+        return require("@/assets/flags/" +
+          this.flagObject[this.countryCode.toLowerCase()] +
+          ".svg");
       }
       console.log(this.countryCode);
-      return this.flagObject.default;
+      return require("@/assets/flags/" + this.flagObject.default + ".svg");
     },
     rankStarNumber() {
       return Math.round(this.rank / 2);
