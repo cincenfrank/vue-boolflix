@@ -1,25 +1,11 @@
 <template>
   <div v-if="!isFetchingData">
-    <div
-      class="title-row d-flex justify-content-between py-3 align-items-center"
-    >
-      <h2 class="text-white">Movies</h2>
-      <div>
-        <label for="movieFilter" class="text-white pe-2"
-          >Filter Visible Movies</label
-        >
-        <select name="movieFilter" id="movieFilter" v-model="movieFilterValue">
-          <option
-            v-for="filterValue in moviesFilterList"
-            :key="filterValue + '-movie'"
-            :value="filterValue"
-          >
-            {{ filterValue }}
-          </option>
-        </select>
-        <div class="btn btn-danger" @click="movieFilterValue = ''">clear</div>
-      </div>
-    </div>
+    <TitleRow
+      filterId="movieFilter"
+      :filterList="moviesFilterList"
+      titleText="Movies"
+      @selectChanged="movieFilterValue = $event"
+    ></TitleRow>
     <p v-if="displayMoviesList.length === 0" class="text-white">
       No Movies Found for your search
     </p>
@@ -45,26 +31,12 @@
         ></MediaCard>
       </div>
     </div>
-    <div
-      class="title-row d-flex justify-content-between py-3 align-items-center"
-    >
-      <h2 class="text-white">TV Series</h2>
-      <div>
-        <label for="serieFilter" class="text-white pe-2"
-          >Filter Visible TV Series</label
-        >
-        <select name="serieFilter" id="serieFilter" v-model="seriesFilterValue">
-          <option
-            v-for="filterValue in seriesFilterList"
-            :key="filterValue + '-serie'"
-            :value="filterValue"
-          >
-            {{ filterValue }}
-          </option>
-        </select>
-        <div class="btn btn-danger" @click="seriesFilterValue = ''">clear</div>
-      </div>
-    </div>
+    <TitleRow
+      filterId="serieFilter"
+      :filterList="seriesFilterList"
+      titleText="Series"
+      @selectChanged="seriesFilterValue = $event"
+    ></TitleRow>
     <p v-if="displaySeriesList.length === 0" class="text-white">
       No TV Serie Found for your search
     </p>
@@ -96,9 +68,10 @@
 <script>
 import axios from "axios";
 import MediaCard from "./MediaCard.vue";
+import TitleRow from "./TitleRow.vue";
 
 export default {
-  components: { MediaCard },
+  components: { MediaCard, TitleRow },
   name: "SearchPage",
   props: {
     queryString: String,
