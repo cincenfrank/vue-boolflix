@@ -7,7 +7,7 @@
       @keydown.enter="startSearch"
       placeholder="Search for a movie or a TV show"
     />
-    <div class="search-button" @click="startSearch">🔎</div>
+    <div class="search-button btn btn-danger" @click="startSearch">Search</div>
   </div>
 </template>
 

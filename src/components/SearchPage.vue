@@ -1,16 +1,35 @@
 <template>
-  <div>
-    <h2 v-if="!isFetchingData" class="text-white">Movies</h2>
-    <p v-if="moviesList.length === 0" class="text-white">
-      No TV Serie Found for your search
+  <div v-if="!isFetchingData">
+    <div
+      class="title-row d-flex justify-content-between py-3 align-items-center"
+    >
+      <h2 class="text-white">Movies</h2>
+      <div>
+        <label for="movieFilter" class="text-white pe-2"
+          >Filter Visible Movies</label
+        >
+        <select name="movieFilter" id="movieFilter" v-model="movieFilterValue">
+          <option
+            v-for="filterValue in moviesFilterList"
+            :key="filterValue + '-movie'"
+            :value="filterValue"
+          >
+            {{ filterValue }}
+          </option>
+        </select>
+        <div class="btn btn-danger" @click="movieFilterValue = ''">clear</div>
+      </div>
+    </div>
+    <p v-if="displayMoviesList.length === 0" class="text-white">
+      No Movies Found for your search
     </p>
     <div
-      v-else-if="moviesList.length > 0"
+      v-else-if="displayMoviesList.length > 0"
       class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5"
     >
       <div
         class="col p-0"
-        v-for="movie in moviesList"
+        v-for="movie in displayMoviesList"
         :key="'movie-' + movie.id"
       >
         <MediaCard
@@ -22,19 +41,42 @@
           :rank="movie.vote_average"
           :posterPath="movie.poster_path"
           :overview="movie.overview"
+          :genresList="movie.genre_names"
         ></MediaCard>
       </div>
     </div>
-
-    <h2 v-if="!isFetchingData" class="text-white">TV Series</h2>
-    <p v-if="seriesList.length === 0" class="text-white">
+    <div
+      class="title-row d-flex justify-content-between py-3 align-items-center"
+    >
+      <h2 class="text-white">TV Series</h2>
+      <div>
+        <label for="serieFilter" class="text-white pe-2"
+          >Filter Visible TV Series</label
+        >
+        <select name="serieFilter" id="serieFilter" v-model="seriesFilterValue">
+          <option
+            v-for="filterValue in seriesFilterList"
+            :key="filterValue + '-serie'"
+            :value="filterValue"
+          >
+            {{ filterValue }}
+          </option>
+        </select>
+        <div class="btn btn-danger" @click="seriesFilterValue = ''">clear</div>
+      </div>
+    </div>
+    <p v-if="displaySeriesList.length === 0" class="text-white">
       No TV Serie Found for your search
     </p>
     <div
-      v-else-if="seriesList.length > 0"
+      v-else-if="displaySeriesList.length > 0"
       class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5"
     >
-      <div class="col p-0" v-for="serie in seriesList" :key="'tv-' + serie.id">
+      <div
+        class="col p-0"
+        v-for="serie in displaySeriesList"
+        :key="'tv-' + serie.id"
+      >
         <MediaCard
           :id="serie.id"
           type="tv"
@@ -44,6 +86,7 @@
           :rank="serie.vote_average"
           :posterPath="serie.poster_path"
           :overview="serie.overview"
+          :genresList="serie.genre_names"
         ></MediaCard>
       </div>
     </div>
@@ -57,7 +100,11 @@ import MediaCard from "./MediaCard.vue";
 export default {
   components: { MediaCard },
   name: "SearchPage",
-  props: { queryString: String },
+  props: {
+    queryString: String,
+    moviesGenreList: Array,
+    seriesGenreList: Array,
+  },
   data() {
     return {
       isFetchingData: false,
@@ -67,28 +114,35 @@ export default {
         movies: {
           url: "/search/movie",
           variableListName: "moviesList",
+          genreVariableListName: "moviesGenreList",
+          genreFilterList: "moviesFilterList",
           // creditsSuffix: "/movie/",
         },
         series: {
           url: "/search/tv",
           variableListName: "seriesList",
+          genreVariableListName: "seriesGenreList",
+          genreFilterList: "seriesFilterList",
+
           // creditsSuffix: "/tv/",
         },
       },
-      apiGenreConfig: {
-        seriesGenre: {
-          url: "/genre/tv/list",
-          variableListName: "seriesGenreList",
-        },
-        moviesGenre: {
-          url: "/genre/movie/list",
-          variableListName: "moviesGenreList",
-        },
-      },
+      // apiGenreConfig: {
+      //   seriesGenre: {
+      //     url: "/genre/tv/list",
+      //     variableListName: "seriesGenreList",
+      //   },
+      //   moviesGenre: {
+      //     url: "/genre/movie/list",
+      //     variableListName: "moviesGenreList",
+      //   },
+      // },
       moviesList: [],
       seriesList: [],
-      moviesGenreList: [],
-      seriesGenreList: [],
+      moviesFilterList: [],
+      seriesFilterList: [],
+      movieFilterValue: "",
+      seriesFilterValue: "",
       pendingCalls: 0,
     };
   },
@@ -102,21 +156,21 @@ export default {
         this.search("series", this.queryString);
       }
     },
-    getGenres() {
-      for (const el in this.apiGenreConfig) {
-        // debugger;
-        this.pendingCalls++;
-        axios
-          .get(this.apiEndpoint + this.apiGenreConfig[el].url, {
-            params: { api_key: this.apiKey },
-          })
-          .then((resp) => {
-            // debugger;
-            this[this.apiGenreConfig[el].variableListName] = resp.data.genres;
-            this.pendingCalls--;
-          });
-      }
-    },
+    // getGenres() {
+    //   for (const el in this.apiGenreConfig) {
+    //     // debugger;
+    //     this.pendingCalls++;
+    //     axios
+    //       .get(this.apiEndpoint + this.apiGenreConfig[el].url, {
+    //         params: { api_key: this.apiKey },
+    //       })
+    //       .then((resp) => {
+    //         // debugger;
+    //         this[this.apiGenreConfig[el].variableListName] = resp.data.genres;
+    //         this.pendingCalls--;
+    //       });
+    //   }
+    // },
     search(apiType, queryText) {
       this.pendingCalls++;
       axios
@@ -125,14 +179,55 @@ export default {
         })
         .then((resp) => {
           console.log(resp.data);
+          // debugger;
+          // resp.data.results.genre_names = [];
+          // resp.data.results.forEach((list) => {
+          //   list.genre_ids.forEach((el) => {
+          //     const name = this.getGenreName(el, apiType);
+          //     if (name) {
+          //       list.genre_names.push(name);
+          //     }
+          //   });
+          // });
           this[this.apiConfig[apiType].variableListName] = resp.data.results;
-
+          this[this.apiConfig[apiType].variableListName]["genre_names"] = [];
+          this[this.apiConfig[apiType].variableListName].forEach((list) => {
+            list.genre_ids.forEach((el) => {
+              const name = this.getGenreName(el, apiType);
+              if (name) {
+                if (!list.genre_names) {
+                  list.genre_names = [];
+                }
+                list.genre_names.push(name);
+                if (
+                  !this[this.apiConfig[apiType].genreFilterList].includes(name)
+                ) {
+                  this[this.apiConfig[apiType].genreFilterList].push(name);
+                }
+              }
+            });
+          });
           // this[this.apiConfig[apiType].variableListName].forEach((element) => {
           //   // element.cast = [];
           //   this.getCredits(apiType, element.id, element);
           // });
           this.pendingCalls--;
         });
+    },
+    getGenreName(genreId, apiType) {
+      // debugger;
+      for (const index in this[this.apiConfig[apiType].genreVariableListName]) {
+        const genreRef =
+          this[this.apiConfig[apiType].genreVariableListName][index];
+        // debugger;
+        if (genreRef.id === genreId) {
+          return genreRef.name;
+        }
+      }
+      return "not-available";
+      // return this[this.apiConfig[apiType].genreVariableListName].forEach(
+      //   (element) => {}
+      // );
     },
     // getCredits(apiType, id, objectReference) {
     //   this.pendingCalls++;
@@ -166,8 +261,40 @@ export default {
       }
     },
   },
+  computed: {
+    displayMoviesList() {
+      if (this.movieFilterValue) {
+        return this.moviesList.reduce((acc, current) => {
+          // debugger;
+          if (
+            current.genre_names &&
+            current.genre_names.includes(this.movieFilterValue)
+          ) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+      }
+      return this.moviesList;
+    },
+    displaySeriesList() {
+      if (this.seriesFilterValue) {
+        return this.seriesList.reduce((acc, current) => {
+          // debugger;
+          if (
+            current.genre_names &&
+            current.genre_names.includes(this.seriesFilterValue)
+          ) {
+            acc.push(current);
+          }
+          return acc;
+        }, []);
+      }
+      return this.seriesList;
+    },
+  },
   mounted() {
-    this.getGenres();
+    // this.getGenres();
     this.onSearch();
   },
 };

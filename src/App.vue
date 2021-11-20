@@ -13,6 +13,8 @@
           v-if="routingObject.searchPage"
           @loadingComplete="onLoadingComplete('searchPage')"
           :queryString="queryString"
+          :moviesGenreList="moviesGenreList"
+          :seriesGenreList="seriesGenreList"
         ></SearchPage>
         <HomePage
           class="
@@ -48,6 +50,7 @@ import HomePage from "./components/HomePage.vue";
 import LoadingPage from "./components/LoadingPage.vue";
 import SearchBar from "./components/SearchBar.vue";
 import SearchPage from "./components/SearchPage.vue";
+import axios from "axios";
 export default {
   name: "App",
   components: { SearchBar, SearchPage, LoadingPage, HomePage },
@@ -60,11 +63,41 @@ export default {
         loadingPage: true,
         homePage: false,
       },
+      apiGenreConfig: {
+        seriesGenre: {
+          url: "/genre/tv/list",
+          variableListName: "seriesGenreList",
+        },
+        moviesGenre: {
+          url: "/genre/movie/list",
+          variableListName: "moviesGenreList",
+        },
+      },
+      moviesGenreList: [],
+      seriesGenreList: [],
+      apiKey: "4315a46b8f5cb187030ac497d365dea0",
+      apiEndpoint: "https://api.themoviedb.org/3",
+      isFetchingData: false,
+      pendingCalls: 0,
     };
+  },
+  watch: {
+    pendingCalls: function () {
+      if (
+        this.pendingCalls === 0 &&
+        this.moviesGenreList.length > 0 &&
+        this.seriesGenreList.length > 0
+      ) {
+        setTimeout(() => {
+          this.initData();
+        }, 2000);
+      }
+    },
   },
   methods: {
     initData() {
       this.resetRoutingPages();
+
       this.routingObject.loadingPage = false;
       this.routingObject.homePage = true;
     },
@@ -92,6 +125,21 @@ export default {
     onLoadingComplete() {
       this.routingObject.loadingPage = false;
     },
+    getGenres() {
+      for (const el in this.apiGenreConfig) {
+        // debugger;
+        this.pendingCalls++;
+        axios
+          .get(this.apiEndpoint + this.apiGenreConfig[el].url, {
+            params: { api_key: this.apiKey },
+          })
+          .then((resp) => {
+            // debugger;
+            this[this.apiGenreConfig[el].variableListName] = resp.data.genres;
+            this.pendingCalls--;
+          });
+      }
+    },
     // search(apiType, queryText) {
     //   axios
     //     .get(this.apiEndpoint + this.apiConfig[apiType].url, {
@@ -112,9 +160,7 @@ export default {
     // },
   },
   mounted() {
-    setTimeout(() => {
-      this.initData();
-    }, 3000);
+    this.getGenres();
   },
 };
 </script>

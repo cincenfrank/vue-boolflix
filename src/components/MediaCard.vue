@@ -39,6 +39,14 @@
           ></ActorCard>
         </div>
       </div>
+      <div class="d-flex flex-wrap">
+        <GenreChip
+          v-for="(genre, i) in genresList"
+          :key="'genre-' + i"
+          :genreName="genre"
+        >
+        </GenreChip>
+      </div>
     </div>
   </div>
 </template>
@@ -47,8 +55,9 @@
 import ActorCard from "./ActorCard.vue";
 import StarsRank from "./StarsRank.vue";
 import axios from "axios";
+import GenreChip from "./GenreChip.vue";
 export default {
-  components: { StarsRank, ActorCard },
+  components: { StarsRank, ActorCard, GenreChip },
   name: "MediaCard",
   props: {
     type: String,
@@ -59,6 +68,7 @@ export default {
     rank: Number,
     posterPath: String,
     overview: String,
+    genresList: Array,
   },
   data() {
     return {
