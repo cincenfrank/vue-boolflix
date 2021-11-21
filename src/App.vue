@@ -1,12 +1,6 @@
 <template>
   <div id="app" class="vh-100 overflow-hidden d-flex flex-column">
     <Header @onSearch="onSearch"></Header>
-    <!-- <header>
-      <nav>
-        <img src="@/assets/logo_boolflix.png" alt="logo boolflix" />
-        <SearchBar @onSearch="onSearch"></SearchBar>
-      </nav>
-    </header> -->
     <main class="overflow-hidden bg-dark flex-grow-1 position-relative h-100">
       <div class="h-100 overflow-auto">
         <SearchPage
@@ -119,8 +113,6 @@ export default {
           this.routingObject.searchPage = true;
         }
       }
-      // this.search("movies", queryString);
-      // this.search("series", queryString);
     },
 
     onLoadingComplete() {
@@ -128,37 +120,17 @@ export default {
     },
     getGenres() {
       for (const el in this.apiGenreConfig) {
-        // debugger;
         this.pendingCalls++;
         axios
           .get(this.apiEndpoint + this.apiGenreConfig[el].url, {
             params: { api_key: this.apiKey },
           })
           .then((resp) => {
-            // debugger;
             this[this.apiGenreConfig[el].variableListName] = resp.data.genres;
             this.pendingCalls--;
           });
       }
     },
-    // search(apiType, queryText) {
-    //   axios
-    //     .get(this.apiEndpoint + this.apiConfig[apiType].url, {
-    //       params: { api_key: this.apiKey, query: queryText },
-    //     })
-    //     .then((resp) => {
-    //       console.log(resp.data);
-    //       this[this.apiConfig[apiType].variableListName] = resp.data.results;
-    //     });
-    // },
-
-    // searchSeries(searchedText) {
-    //   axios
-    //     .get(this.apiEndpoint + "/search/tv", {
-    //       params: { api_key: this.apiKey, query: searchedText },
-    //     })
-    //     .then((resp) => console.log(resp.data));
-    // },
   },
   mounted() {
     this.getGenres();
@@ -168,12 +140,4 @@ export default {
 
 <style lang="scss">
 @import "@/styles/app.scss";
-// #app {
-// font-family: Avenir, Helvetica, Arial, sans-serif;
-// -webkit-font-smoothing: antialiased;
-// -moz-osx-font-smoothing: grayscale;
-// text-align: center;
-// color: #2c3e50;
-// margin-top: 60px;
-// }
 </style>
