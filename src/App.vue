@@ -1,11 +1,12 @@
 <template>
   <div id="app" class="vh-100 overflow-hidden d-flex flex-column">
-    <header>
+    <Header @onSearch="onSearch"></Header>
+    <!-- <header>
       <nav>
         <img src="@/assets/logo_boolflix.png" alt="logo boolflix" />
         <SearchBar @onSearch="onSearch"></SearchBar>
       </nav>
-    </header>
+    </header> -->
     <main class="overflow-hidden bg-dark flex-grow-1 position-relative h-100">
       <div class="h-100 overflow-auto">
         <SearchPage
@@ -48,12 +49,12 @@
 <script>
 import HomePage from "./components/HomePage.vue";
 import LoadingPage from "./components/LoadingPage.vue";
-import SearchBar from "./components/SearchBar.vue";
 import SearchPage from "./components/SearchPage.vue";
 import axios from "axios";
+import Header from "./components/Header.vue";
 export default {
   name: "App",
-  components: { SearchBar, SearchPage, LoadingPage, HomePage },
+  components: { SearchPage, LoadingPage, HomePage, Header },
   data() {
     return {
       queryString: "",
