@@ -1,13 +1,13 @@
 <template>
   <div v-if="!isFetchingData">
     <Shell
-      :filterList="moviesFilterList"
+      :genreList="moviesGenreList"
       :isMovie="true"
       :mediaItemsList="moviesList"
       shellTitle="Movies"
     ></Shell>
     <Shell
-      :filterList="seriesFilterList"
+      :genreList="seriesGenreList"
       :isMovie="false"
       :mediaItemsList="seriesList"
       shellTitle="Series"
@@ -36,21 +36,16 @@ export default {
         movies: {
           url: "/search/movie",
           variableListName: "moviesList",
-          genreVariableListName: "moviesGenreList",
-          genreFilterList: "moviesFilterList",
         },
         series: {
           url: "/search/tv",
           variableListName: "seriesList",
-          genreVariableListName: "seriesGenreList",
-          genreFilterList: "seriesFilterList",
         },
       },
 
       moviesList: [],
       seriesList: [],
-      moviesFilterList: [],
-      seriesFilterList: [],
+
       pendingCalls: 0,
     };
   },
@@ -59,7 +54,6 @@ export default {
     onSearch() {
       if (this.queryString.trim()) {
         this.isFetchingData = true;
-        // debugger;
         this.search("movies", this.queryString);
         this.search("series", this.queryString);
       }
@@ -73,36 +67,9 @@ export default {
         .then((resp) => {
           console.log(resp.data);
           this[this.apiConfig[apiType].variableListName] = resp.data.results;
-          this[this.apiConfig[apiType].variableListName]["genre_names"] = [];
-          this[this.apiConfig[apiType].variableListName].forEach((list) => {
-            list.genre_ids.forEach((el) => {
-              const name = this.getGenreName(el, apiType);
-              if (name) {
-                if (!list.genre_names) {
-                  list.genre_names = [];
-                }
-                list.genre_names.push(name);
-                if (
-                  !this[this.apiConfig[apiType].genreFilterList].includes(name)
-                ) {
-                  this[this.apiConfig[apiType].genreFilterList].push(name);
-                }
-              }
-            });
-          });
 
           this.pendingCalls--;
         });
-    },
-    getGenreName(genreId, apiType) {
-      for (const index in this[this.apiConfig[apiType].genreVariableListName]) {
-        const genreRef =
-          this[this.apiConfig[apiType].genreVariableListName][index];
-        if (genreRef.id === genreId) {
-          return genreRef.name;
-        }
-      }
-      return "not-available";
     },
   },
   watch: {

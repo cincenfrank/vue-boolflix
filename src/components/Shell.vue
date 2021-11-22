@@ -45,16 +45,39 @@ export default {
     return { filterValue: "" };
   },
   props: {
-    filterList: Array,
     shellTitle: String,
     isMovie: Boolean,
     mediaItemsList: Array,
+    genreList: Array,
+  },
+  methods: {
+    generateFilterNameListInMediaItemList() {
+      this.mediaItemsList.forEach((item) => {
+        item.genre_ids.forEach((el) => {
+          const name = this.getGenreName(el);
+          if (name) {
+            if (!item.genre_names) {
+              item.genre_names = [];
+            }
+            item.genre_names.push(name);
+          }
+        });
+      });
+    },
+    getGenreName(genreId) {
+      for (const index in this.genreList) {
+        const genreRef = this.genreList[index];
+        if (genreRef.id === genreId) {
+          return genreRef.name;
+        }
+      }
+      return "not-available";
+    },
   },
   computed: {
     displayList() {
       if (this.filterValue) {
         return this.mediaItemsList.reduce((acc, current) => {
-          // debugger;
           if (
             current.genre_names &&
             current.genre_names.includes(this.filterValue)
@@ -66,6 +89,23 @@ export default {
       }
       return this.mediaItemsList;
     },
+    filterList() {
+      const toReturn = [];
+      this.mediaItemsList.forEach((item) => {
+        if (item.genre_ids) {
+          item.genre_ids.forEach((id) => {
+            const name = this.getGenreName(id);
+            if (!toReturn.includes(name)) {
+              toReturn.push(name);
+            }
+          });
+        }
+      });
+      return toReturn;
+    },
+  },
+  mounted() {
+    this.generateFilterNameListInMediaItemList();
   },
 };
 </script>
