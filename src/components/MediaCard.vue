@@ -30,7 +30,7 @@
         <div
           class="col"
           v-for="actor in castList"
-          :key="id + '-' + type + '-' + actor.id"
+          :key="id + '-' + type + '-' + actor.id + 'actor'"
         >
           <ActorCard
             :actorName="actor.name"
